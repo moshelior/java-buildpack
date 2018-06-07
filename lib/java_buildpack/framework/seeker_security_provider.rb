@@ -48,7 +48,7 @@ module JavaBuildpack
         # puts 'Aftger unzip 1'
         shell "unzip  #{File.join(absolute_sensor_dir, 'SeekerInstaller.jar')} #{AGENT_JARS_PATH} -d #{absolute_sensor_dir} 2>&1"
         puts 'Aftger unzip 2'
-        FileUtils.mv(@droplet.sandbox + 'seeker_tmp_sensor/'+AGENT_JARS_PATH, @droplet.sandbox)
+        FileUtils.mv(@droplet.sandbox + 'seeker_tmp_sensor/inline/agents/java', @droplet.sandbox+'seeker_lib')
         aaa =  `ls -lrt #{@droplet.sandbox}`
         puts "#{aaa}"
         # shell "rm -rf #{absolute_sensor_dir}"
@@ -77,7 +77,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
         credentials = fetch_credentials
-        @droplet.java_opts.add_javaagent(@droplet.sandbox + 'seeker-agent.jar')
+        @droplet.java_opts.add_javaagent(@droplet.sandbox + 'seeker_lib/seeker-agent.jar')
         @droplet.environment_variables
                 .add_environment_variable('SEEKER_SENSOR_HOST', credentials[SEEKER_HOST_SERVICE_CONFIG_KEY])
                 .add_environment_variable('SEEKER_SENSOR_HTTP_PORT', credentials[SEEKER_HOST_PORT_SERVICE_CONFIG_KEY])
