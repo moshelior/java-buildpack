@@ -35,7 +35,7 @@ module JavaBuildpack
         sensor_dir = File.join(@droplet.sandbox, 'seeker_tmp_sensor')
         shell "rm -rf #{sensor_dir}"
         download_zip('', URI.join(credentials[ENTERPRISE_SERVER_URI_SERVICE_CONFIG_KEY],
-                                  SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER), false, sensor_dir)
+                                  SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, sensor_dir)
         shell "unzip -qq #{File.join(sensor_dir, 'SensorInstaller.zip')} -d #{@droplet.sandbox} 2>&1"
         shell "unzip -qq #{File.join(sensor_dir, 'SeekerInstaller.jar')} #{AGENT_JARS_PATH} -d #{sensor_dir} 2>&1"
         shell "rm -rf #{sensor_dir}"
