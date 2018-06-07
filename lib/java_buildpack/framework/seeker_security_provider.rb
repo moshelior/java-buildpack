@@ -45,7 +45,7 @@ module JavaBuildpack
         puts 'Doen downloading '
         # shell "unzip  #{File.join(absolute_sensor_dir, 'SensorInstaller.jar')}  "
         # puts 'Aftger unzip 1'
-        inner_jar_file = seeker_tmp_dir + '/SeekerInstaller.jar'
+        inner_jar_file = seeker_tmp_dir + 'SeekerInstaller.jar'
         puts " innner jar: #{inner_jar_file}"
         shell "unzip  #{inner_jar_file} #{AGENT_JARS_PATH} -d #{seeker_tmp_dir} 2>&1"
         puts 'Aftger unzip 2'
