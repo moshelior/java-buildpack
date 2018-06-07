@@ -41,7 +41,7 @@ module JavaBuildpack
         enterprise_server_uri  = URI.parse(URI.encode(credentials[ENTERPRISE_SERVER_URI_SERVICE_CONFIG_KEY].strip))
         puts "Before downloading from: #{enterprise_server_uri}"
         download_zip('', URI.join(enterprise_server_uri,
-                                  SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, 'seeker_tmp_sensor')
+                                  SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, @droplet.sandbox + 'seeker_tmp_sensor')
         puts 'Doen downloading '
         shell "unzip -qq #{File.join(sensor_dir, 'SensorInstaller.zip')} -d #{@droplet.sandbox} 2>&1"
         puts 'Aftger unzip 1'
