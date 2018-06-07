@@ -33,14 +33,14 @@ module JavaBuildpack
       def compile
         credentials = fetch_credentials
         assert_configuration_valid(credentials)
-        absolute_sensor_dir = File.join(@droplet.sandbox, 'seeker_tmp_sensor')
+        absolute_sensor_dir = File.join(@droplet.sandbox, 'seeker_tmp_sensor/')
         FileUtils.mkdir_p absolute_sensor_dir
         puts "Sensor Directory: #{absolute_sensor_dir}"
         shell "rm -rf #{absolute_sensor_dir}"
         puts 'After deletion of sesnro dir'
         enterprise_server_uri  = URI.parse(URI.encode(credentials[ENTERPRISE_SERVER_URI_SERVICE_CONFIG_KEY].strip))
         puts "Before downloading from: #{enterprise_server_uri}"
-        puts "realtive dir : #{@droplet.sandbox + 'seeker_tmp_sensor'} and ansolute: #{absolute_sensor_dir}"
+        puts "realtive dir : #{@droplet.sandbox + 'seeker_tmp_sensor/'} and ansolute: #{absolute_sensor_dir}"
         download_zip('', URI.join(enterprise_server_uri,
                                   SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, @droplet.sandbox + 'seeker_tmp_sensor', 'SensorInstaller.zip')
         puts 'Doen downloading '
