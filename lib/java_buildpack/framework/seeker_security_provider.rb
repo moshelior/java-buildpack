@@ -44,8 +44,9 @@ module JavaBuildpack
         download_zip('', URI.join(enterprise_server_uri,
                                   SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, @droplet.sandbox + 'seeker_tmp_sensor', 'SensorInstaller.zip')
         puts 'Doen downloading '
-        shell "ls -lrt #{absolute_sensor_dir}"
-        shell "unzip  #{File.join(absolute_sensor_dir, 'SensorInstaller.zip')} -d #{absolute_sensor_dir} "
+        aaa =  `ls -lrt #{absolute_sensor_dir}`
+        puts "#{aaa}"
+        shell "unzip  #{File.join(absolute_sensor_dir, 'SensorInstaller.zip')}  "
         puts 'Aftger unzip 1'
         shell "unzip  #{File.join(absolute_sensor_dir, 'SeekerInstaller.jar')} #{AGENT_JARS_PATH} -d #{absolute_sensor_dir} 2>&1"
         puts 'Aftger unzip 2'
