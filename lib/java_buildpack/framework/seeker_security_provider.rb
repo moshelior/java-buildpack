@@ -44,16 +44,17 @@ module JavaBuildpack
         download_zip('', URI.join(enterprise_server_uri,
                                   SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, @droplet.sandbox + 'seeker_tmp_sensor', 'SensorInstaller.zip')
         puts 'Doen downloading '
-        # aaa =  `ls -lrt #{absolute_sensor_dir}`
-        # puts "#{aaa}"
         # shell "unzip  #{File.join(absolute_sensor_dir, 'SensorInstaller.jar')}  "
         # puts 'Aftger unzip 1'
         shell "unzip  #{File.join(absolute_sensor_dir, 'SeekerInstaller.jar')} #{AGENT_JARS_PATH} -d #{absolute_sensor_dir} 2>&1"
         puts 'Aftger unzip 2'
-        shell "rm -rf #{absolute_sensor_dir}"
-        puts 'Aftger cleanup'
-        @droplet.copy_resources
-        puts 'Aftger cop resrouces'
+        aaa =  `ls -lrt #{absolute_sensor_dir}`
+        puts "#{aaa}"
+        # shell "rm -rf #{absolute_sensor_dir}"
+        # puts 'Aftger cleanup'
+        # @droplet.copy_resources
+        # puts 'Aftger cop resrouces'
+        puts  'the end'
       end
 
       # extract seeker relevant configuration as map
@@ -94,7 +95,7 @@ module JavaBuildpack
       SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER = 'rest/ui/installers/binaries/LINUX/SensorInstaller.zip' # TODO: remove after the last slash - used for testing
 
       # Relative path of the agent jars after Sensor extraction
-      AGENT_JARS_PATH = 'inline/agents/java/'
+      AGENT_JARS_PATH = 'inline/agents/java/*'
 
       # seeker service name identifier
       FILTER = /seeker/
