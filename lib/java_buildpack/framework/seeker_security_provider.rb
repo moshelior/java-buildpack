@@ -48,11 +48,12 @@ module JavaBuildpack
         # puts 'Aftger unzip 1'
         shell "unzip  #{File.join(absolute_sensor_dir, 'SeekerInstaller.jar')} #{AGENT_JARS_PATH} -d #{absolute_sensor_dir} 2>&1"
         puts 'Aftger unzip 2'
-        aaa =  `ls -lrt #{absolute_sensor_dir}`
+        FileUtils.mv(@droplet.sandbox + 'seeker_tmp_sensor/'+AGENT_JARS_PATH, @droplet.sandbox)
+        aaa =  `ls -lrt #{@droplet.sandbox}`
         puts "#{aaa}"
         # shell "rm -rf #{absolute_sensor_dir}"
         # puts 'Aftger cleanup'
-        # @droplet.copy_resources
+        @droplet.copy_resources
         # puts 'Aftger cop resrouces'
         puts  'the end'
       end
