@@ -45,12 +45,14 @@ module JavaBuildpack
         puts 'Doen downloading '
         # shell "unzip  #{File.join(absolute_sensor_dir, 'SensorInstaller.jar')}  "
         # puts 'Aftger unzip 1'
-        shell "unzip  #{seeker_tmp_dir+ '/SeekerInstaller.jar'} #{AGENT_JARS_PATH} -d #{seeker_tmp_dir} 2>&1"
+        inner_jar_file = seeker_tmp_dir + '/SeekerInstaller.jar'
+        puts " innner jar: #{inner_jar_file}"
+        shell "unzip  #{inner_jar_file} #{AGENT_JARS_PATH} -d #{seeker_tmp_dir} 2>&1"
         puts 'Aftger unzip 2'
         shell "mv #{seeker_tmp_dir+ AGENT_JARS_PATH} #{@droplet.sandbox}"
         aaa =  `ls -lrt #{@droplet.sandbox}`
         puts "#{aaa}"
-        shell "rm -rf #{absolute_sensor_dir}"
+        shell "rm -rf #{seeker_tmp_dir}"
         # puts 'Aftger cleanup'
         @droplet.copy_resources
         # puts 'Aftger cop resrouces'
