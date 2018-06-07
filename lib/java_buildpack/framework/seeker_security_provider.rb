@@ -17,6 +17,7 @@
 
 require 'java_buildpack/component/base_component'
 require 'java_buildpack/framework'
+require 'fileutils'
 
 module JavaBuildpack
   module Framework
@@ -33,6 +34,7 @@ module JavaBuildpack
         credentials = fetch_credentials
         assert_configuration_valid(credentials)
         sensor_dir = File.join(@droplet.sandbox, 'seeker_tmp_sensor')
+        FileUtils.mkdir_p sensor_dir
         puts "Sensor Directory: #{sensor_dir}"
         shell "rm -rf #{sensor_dir}"
         puts 'After deletion of sesnro dir'
@@ -86,7 +88,7 @@ module JavaBuildpack
       ENTERPRISE_SERVER_URI_SERVICE_CONFIG_KEY = 'enterprise_server_uri'
 
       # Relative path of the sensor zip
-      SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER = 'rest/ui/installers/binaries/LINUX'
+      SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER = 'rest/ui/installers/binaries/LINUX/SensorInstaller.zip' # TODO: remove after the last slash - used for testing
 
       # Relative path of the agent jars after Sensor extraction
       AGENT_JARS_PATH = 'inline/agents/java/'
