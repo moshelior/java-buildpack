@@ -18,7 +18,6 @@
 require 'java_buildpack/component/base_component'
 require 'java_buildpack/framework'
 require 'uri'
-require 'file'
 
 module JavaBuildpack
   module Framework
