@@ -33,22 +33,21 @@ module JavaBuildpack
       def compile
         credentials = fetch_credentials
         assert_configuration_valid(credentials)
-        absolute_sensor_dir = File.join(@droplet.sandbox, 'seeker_tmp_sensor/')
-        FileUtils.mkdir_p absolute_sensor_dir
-        puts "Sensor Directory: #{absolute_sensor_dir}"
-        shell "rm -rf #{absolute_sensor_dir}"
+        seeker_tmp_dir = @droplet.sandbox + 'seeker_tmp_sensor'
+        puts "Sensor Directory: #{seeker_tmp_dir}"
+        shell "rm -rf #{seeker_tmp_dir}"
         puts 'After deletion of sesnro dir'
         enterprise_server_uri  = URI.parse(URI.encode(credentials[ENTERPRISE_SERVER_URI_SERVICE_CONFIG_KEY].strip))
         puts "Before downloading from: #{enterprise_server_uri}"
-        puts "realtive dir : #{@droplet.sandbox + 'seeker_tmp_sensor/'} and ansolute: #{absolute_sensor_dir}"
+        puts "realtive dir : #{seeker_tmp_dir}"
         download_zip('', URI.join(enterprise_server_uri,
-                                  SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, @droplet.sandbox + 'seeker_tmp_sensor', 'SensorInstaller.zip')
+                                  SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, seeker_tmp_dir, 'SensorInstaller.zip')
         puts 'Doen downloading '
         # shell "unzip  #{File.join(absolute_sensor_dir, 'SensorInstaller.jar')}  "
         # puts 'Aftger unzip 1'
-        shell "unzip  #{File.join(absolute_sensor_dir, 'SeekerInstaller.jar')} #{AGENT_JARS_PATH} -d #{absolute_sensor_dir} 2>&1"
+        shell "unzip  #{seeker_tmp_dir+ '/SeekerInstaller.jar'} #{AGENT_JARS_PATH} -d #{seeker_tmp_dir} 2>&1"
         puts 'Aftger unzip 2'
-        shell "mv #{@droplet.sandbox + 'seeker_tmp_sensor/inline/agents/java/*'} #{@droplet.sandbox}"
+        shell "mv #{seeker_tmp_dir+ AGENT_JARS_PATH} #{@droplet.sandbox}"
         aaa =  `ls -lrt #{@droplet.sandbox}`
         puts "#{aaa}"
         shell "rm -rf #{absolute_sensor_dir}"
