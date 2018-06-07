@@ -34,29 +34,18 @@ module JavaBuildpack
         credentials = fetch_credentials
         assert_configuration_valid(credentials)
         seeker_tmp_dir = @droplet.sandbox + 'seeker_tmp_sensor'
-        puts "Sensor Directory: #{seeker_tmp_dir}"
         shell "rm -rf #{seeker_tmp_dir}"
-        puts 'After deletion of sesnro dir'
         enterprise_server_uri  = URI.parse(URI.encode(credentials[ENTERPRISE_SERVER_URI_SERVICE_CONFIG_KEY].strip))
-        puts "Before downloading from: #{enterprise_server_uri}"
-        puts "realtive dir : #{seeker_tmp_dir}"
+        puts "Before downloading Sensor from: #{enterprise_server_uri}"
         download_zip('', URI.join(enterprise_server_uri,
                                   SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, seeker_tmp_dir, 'SensorInstaller.zip')
-        puts 'Doen downloading '
-        # shell "unzip  #{File.join(absolute_sensor_dir, 'SensorInstaller.jar')}  "
-        # puts 'Aftger unzip 1'
+        puts 'Download Completed!'
         inner_jar_file = seeker_tmp_dir + 'SeekerInstaller.jar'
-        puts " innner jar: #{inner_jar_file}"
+        # Unzip only the java agent - to save time
         shell "unzip  #{inner_jar_file} #{AGENT_JARS_PATH} -d #{seeker_tmp_dir} 2>&1"
-        puts 'Aftger unzip 2'
         shell "mv #{seeker_tmp_dir+ AGENT_JARS_PATH} #{@droplet.sandbox}"
-        aaa =  `ls -lrt #{@droplet.sandbox}`
-        puts "#{aaa}"
         shell "rm -rf #{seeker_tmp_dir}"
-        # puts 'Aftger cleanup'
         @droplet.copy_resources
-        # puts 'Aftger cop resrouces'
-        puts  'the end'
       end
 
       # extract seeker relevant configuration as map
@@ -94,9 +83,9 @@ module JavaBuildpack
       ENTERPRISE_SERVER_URI_SERVICE_CONFIG_KEY = 'enterprise_server_uri'
 
       # Relative path of the sensor zip
-      SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER = 'rest/ui/installers/binaries/LINUX/SensorInstaller.zip' # TODO: remove after the last slash - used for testing
+      SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER = 'rest/ui/installers/binaries/LINUX'
 
-      # Relative path of the agent jars after Sensor extraction
+      # Relative path of the Java agent jars after Sensor extraction
       AGENT_JARS_PATH = 'inline/agents/java/*'
 
       # seeker service name identifier
