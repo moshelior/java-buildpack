@@ -42,7 +42,7 @@ module JavaBuildpack
         puts "Before downloading from: #{enterprise_server_uri}"
         puts "realtive dir : #{@droplet.sandbox + 'seeker_tmp_sensor'} and ansolute: #{absolute_sensor_dir}"
         download_zip('', URI.join(enterprise_server_uri,
-                                  SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, @droplet.sandbox + 'seeker_tmp_sensor')
+                                  SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, @droplet.sandbox + 'seeker_tmp_sensor', 'SensorInstaller.zip')
         puts 'Doen downloading '
         shell "unzip -qq #{File.join(absolute_sensor_dir, 'SensorInstaller.zip')} -d #{absolute_sensor_dir} 2>&1"
         puts 'Aftger unzip 1'
