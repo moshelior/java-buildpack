@@ -32,7 +32,7 @@ module JavaBuildpack
       def compile
         credentials = fetch_credentials
         assert_configuration_valid(credentials)
-        download_tar('', credentials[AGENT_ARTIFACT_SERVICE_CONFIG_KEY], false, @droplet.sandbox)
+        download_zip('', credentials[AGENT_ARTIFACT_SERVICE_CONFIG_KEY], false, @droplet.sandbox)
         @droplet.copy_resources
       end
 
@@ -66,13 +66,20 @@ module JavaBuildpack
       # JSON key for the port of the seeker sensor
       SEEKER_HOST_PORT_SERVICE_CONFIG_KEY = 'sensor_port'
 
-      # In the future Seeker's will expose REST endpoint for downloading the agent from the enterprise server (tgz file)
-      AGENT_ARTIFACT_SERVICE_CONFIG_KEY = 'agent_uri'
+      # Enterprise server uri, for example: `https://seeker-server.com:8082`
+      ENTERPRISE_SERVER_URI_SERVICE_CONFIG_KEY = 'enterprise_server_uri'
+
+      # Relative path of the sensor zip
+      SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER = '/rest/ui/installers/binaries/LINUX'
+
+      # Relative path of the agent jars after Sensor extraction
+      AGENT_JARS_RELATIVE_PATH_AT_EXTRACTED_SENSOR ='SensorInstaller.zip/SeekerInstaller.jar/inline/agents/java/'
+
       # seeker service name identifier
       FILTER = /seeker/
 
       private_constant :SEEKER_HOST_SERVICE_CONFIG_KEY, :SEEKER_HOST_PORT_SERVICE_CONFIG_KEY,
-                       :AGENT_ARTIFACT_SERVICE_CONFIG_KEY, :AGENT_ARTIFACT_SERVICE_CONFIG_KEY
+                       :ENTERPRISE_SERVER_URI_SERVICE_CONFIG_KEY
     end
   end
 end
