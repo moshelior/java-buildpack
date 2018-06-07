@@ -33,21 +33,21 @@ module JavaBuildpack
       def compile
         credentials = fetch_credentials
         assert_configuration_valid(credentials)
-        sensor_dir = File.join(@droplet.sandbox, 'seeker_tmp_sensor')
-        FileUtils.mkdir_p sensor_dir
-        puts "Sensor Directory: #{sensor_dir}"
-        shell "rm -rf #{sensor_dir}"
+        absolute_sensor_dir = File.join(@droplet.sandbox, 'seeker_tmp_sensor')
+        FileUtils.mkdir_p absolute_sensor_dir
+        puts "Sensor Directory: #{absolute_sensor_dir}"
+        shell "rm -rf #{absolute_sensor_dir}"
         puts 'After deletion of sesnro dir'
         enterprise_server_uri  = URI.parse(URI.encode(credentials[ENTERPRISE_SERVER_URI_SERVICE_CONFIG_KEY].strip))
         puts "Before downloading from: #{enterprise_server_uri}"
         download_zip('', URI.join(enterprise_server_uri,
-                                  SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, sensor_dir)
+                                  SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, 'seeker_tmp_sensor')
         puts 'Doen downloading '
         shell "unzip -qq #{File.join(sensor_dir, 'SensorInstaller.zip')} -d #{@droplet.sandbox} 2>&1"
         puts 'Aftger unzip 1'
         shell "unzip -qq #{File.join(sensor_dir, 'SeekerInstaller.jar')} #{AGENT_JARS_PATH} -d #{sensor_dir} 2>&1"
         puts 'Aftger unzip 2'
-        shell "rm -rf #{sensor_dir}"
+        shell "rm -rf #{absolute_sensor_dir}"
         puts 'Aftger cleanup'
         @droplet.copy_resources
         puts 'Aftger cop resrouces'
