@@ -78,7 +78,7 @@ module JavaBuildpack
       SEEKER_HOST_PORT_SERVICE_CONFIG_KEY = 'sensor_port'
 
       # Enterprise server uri, for example: `https://seeker-server.com:8082`
-      ENTERPRISE_SERVER_URI_SERVICE_CONFIG_KEY = 'enterprise_server_uri'
+      ENTERPRISE_SERVER_URI_SERVICE_CONFIG_KEY = 'enterprise_server_url'
 
       # Relative path of the sensor zip
       SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER = 'rest/ui/installers/binaries/LINUX'
