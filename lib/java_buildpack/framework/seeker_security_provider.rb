@@ -39,11 +39,9 @@ module JavaBuildpack
         puts "Before downloading Sensor from: #{enterprise_server_uri}"
         download_zip('', URI.join(enterprise_server_uri,
                                   SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s, false, seeker_tmp_dir, 'SensorInstaller.zip')
-        puts 'Download Completed!'
         inner_jar_file = seeker_tmp_dir + 'SeekerInstaller.jar'
         # Unzip only the java agent - to save time
-        shell "unzip  #{inner_jar_file} #{AGENT_JARS_PATH} -d #{seeker_tmp_dir} 2>&1"
-        shell "mv #{seeker_tmp_dir+ AGENT_JARS_PATH} #{@droplet.sandbox}"
+        shell "unzip  #{inner_jar_file} #{AGENT_JARS_PATH} -d #{@droplet.sandbox} 2>&1"
         shell "rm -rf #{seeker_tmp_dir}"
         @droplet.copy_resources
       end
