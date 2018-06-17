@@ -78,6 +78,7 @@ module JavaBuildpack
 
       private_constant :SEEKER_HOST_CONFIG_KEY, :SEEKER_HOST_PORT_CONFIG_KEY,
                        :ENTERPRISE_SERVER_URI_CONFIG_KEY, :AGENT_PATH
+
       private
 
       def agent_direct_link(credentials)

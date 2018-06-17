@@ -43,13 +43,12 @@ describe JavaBuildpack::Framework::SeekerSecurityProvider do
       expect(component.detect).to be_truthy
     end
 
-
     context do
       let(:credentials) do
         { 'sensor_port' => '9911',
-          'sensor_host' => 'localhost'
-        }
+          'sensor_host' => 'localhost' }
       end
+
       it 'raises error if `enterprise_server_url` not specified' do
         expect { component.compile }.to raise_error(/'enterprise_server_url' credential must be set/)
       end
@@ -58,9 +57,9 @@ describe JavaBuildpack::Framework::SeekerSecurityProvider do
     context do
       let(:credentials) do
         { 'enterprise_server_url' => 'http://10.120.9.45:8082',
-          'sensor_port'           => '9911',
-        }
+          'sensor_port'           => '9911' }
       end
+
       it 'raises error if `sensor_host` not specified' do
         expect { component.compile }.to raise_error(/'sensor_host' credential must be set/)
       end
@@ -69,9 +68,9 @@ describe JavaBuildpack::Framework::SeekerSecurityProvider do
     context do
       let(:credentials) do
         { 'enterprise_server_url' => 'http://10.120.9.45:8082',
-          'sensor_host'           => 'localhost',
-        }
+          'sensor_host'           => 'localhost' }
       end
+
       it 'raises error if `sensor_port` not specified' do
         expect { component.compile }.to raise_error(/'sensor_port' credential must be set/)
       end
@@ -83,9 +82,9 @@ describe JavaBuildpack::Framework::SeekerSecurityProvider do
       let(:credentials) do
         { 'enterprise_server_url' => 'http://10.120.9.45:8082',
           'sensor_host'           => 'localhost',
-          'sensor_port'           => '9911',
-        }
+          'sensor_port'           => '9911' }
       end
+
       before do
         allow(component).to receive(:agent_direct_link).with(credentials).and_return('test-uri')
       end
