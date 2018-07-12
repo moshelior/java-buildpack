@@ -18,7 +18,7 @@
 require 'java_buildpack/component/base_component'
 require 'java_buildpack/framework'
 require 'fileutils'
-require 'cgi'
+
 
 module JavaBuildpack
   module Framework
@@ -116,7 +116,7 @@ module JavaBuildpack
         seeker_tmp_dir = @droplet.sandbox + 'seeker_tmp_sensor'
         shell "rm -rf #{seeker_tmp_dir}"
         enterprise_server_uri = URI.parse(
-          CGI.escape(credentials[ENTERPRISE_SERVER_URL_SERVICE_CONFIG_KEY].strip)
+          URI.encode(credentials[ENTERPRISE_SERVER_URL_SERVICE_CONFIG_KEY].strip)
         )
         puts "Before downloading Sensor from: #{enterprise_server_uri}"
         download_zip('', URI.join(enterprise_server_uri,
