@@ -97,7 +97,7 @@ module JavaBuildpack
       private
 
       def should_download_sensor
-        @droplet.environment_variables.as_env_vars include? AGENT_DIRECT_DOWNLOAD_ENV_KEY
+        @droplet.environment_variables.as_env_vars.include? AGENT_DIRECT_DOWNLOAD_ENV_KEY
       end
 
       def agent_direct_link(credentials)
