@@ -18,6 +18,7 @@
 require 'java_buildpack/component/base_component'
 require 'java_buildpack/framework'
 require 'fileutils'
+require 'cgi'
 
 module JavaBuildpack
   module Framework
