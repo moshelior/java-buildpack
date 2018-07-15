@@ -100,6 +100,7 @@ module JavaBuildpack
       def should_download_sensor
         a=@droplet.environment_variables.as_env_vars
         puts "env vars: #{a}"
+        puts "should use direct download : #{!@droplet.environment_variables.as_env_vars.include? AGENT_DIRECT_DOWNLOAD_ENV_KEY}"
         !@droplet.environment_variables.as_env_vars.include? AGENT_DIRECT_DOWNLOAD_ENV_KEY
       end
 
