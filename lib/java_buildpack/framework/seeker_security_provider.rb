@@ -33,6 +33,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
 
       def compile
+        puts "version 1"
         credentials = fetch_credentials
         assert_configuration_valid(credentials)
         if should_download_sensor
