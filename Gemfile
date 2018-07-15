@@ -11,4 +11,5 @@ group :development do
   gem 'terminal-table'
   gem 'webmock'
   gem 'yard'
+  gem 'addressable'
 end
