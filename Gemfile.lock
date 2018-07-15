@@ -55,7 +55,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  addressable
+  addressable (~> 2.5, >= 2.5.2)
   rake
   redcarpet
   rspec
