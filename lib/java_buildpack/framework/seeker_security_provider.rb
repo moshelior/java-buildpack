@@ -23,6 +23,7 @@ require 'net/http'
 require 'json'
 require 'date'
 require 'cgi'
+require 'addressable/uri'
 
 module JavaBuildpack
   module Framework
@@ -45,7 +46,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
 
       def compile
-        @logger.debug { 'Seeker buildpack compile stage start 20' }
+        @logger.debug { 'Seeker buildpack compile stage start' }
         credentials = fetch_credentials
         @logger.debug { "Credentials #{credentials}" }
         assert_configuration_valid(credentials)
@@ -126,9 +127,14 @@ module JavaBuildpack
       end
 
       def get_seeker_version_details(server_base_url)
-        version_address = URI.join(server_base_url, SEEKER_VERSION_API).to_s
-        uri             = URI.parse(version_address)
-        Net::HTTP.get(uri)
+        uri = Addressable::URI.parse(server_base_url)
+        http = Net::HTTP.new(uri.host,uri.port)
+        if uri.scheme == "https"
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+          http.use_ssl = true
+        end
+        http_response = http.request_get(SEEKER_VERSION_API)
+        http_response.body
       end
 
       def agent_direct_link(credentials)
