@@ -64,7 +64,6 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
-        should_download_sensor
         credentials = fetch_credentials
         @droplet.java_opts.add_javaagent(@droplet.sandbox + 'seeker-agent.jar')
         @droplet.environment_variables
