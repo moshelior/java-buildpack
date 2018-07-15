@@ -46,7 +46,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
 
       def compile
-        @logger.debug { 'Seeker buildpack compile stage start' }
+        @logger.debug { 'Seeker buildpack compile stage start base' }
         credentials = fetch_credentials
         @logger.debug { "Credentials #{credentials}" }
         assert_configuration_valid(credentials)
