@@ -18,7 +18,9 @@
 require 'java_buildpack/component/base_component'
 require 'java_buildpack/framework'
 require 'fileutils'
-
+require 'net/http'
+require 'json'
+require 'date'
 
 module JavaBuildpack
   module Framework
@@ -33,10 +35,10 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
 
       def compile
-        puts "version 1"
+        puts 'version 2'
         credentials = fetch_credentials
         assert_configuration_valid(credentials)
-        if should_download_sensor
+        if should_download_sensor(credentials[ENTERPRISE_SERVER_URL_SERVICE_CONFIG_KEY])
           fetch_agent_within_sensor(credentials)
         else
           fetch_agent_direct(credentials)
@@ -88,22 +90,30 @@ module JavaBuildpack
       # Relative path of the agent zip
       AGENT_PATH = '/rest/ui/installers/agents/binaries/JAVA'
 
+      # Version details of Seekers server REST API path
+      SEEKER_VERSION_API = '/rest/api/version'
+
       # seeker service name identifier
       FILTER = /seeker/
 
-      AGENT_DIRECT_DOWNLOAD_ENV_KEY = 'SEEKER_AGENT_DIRECT_DOWNLOAD'
 
       private_constant :SENSOR_HOST_SERVICE_CONFIG_KEY, :SENSOR_PORT_SERVICE_CONFIG_KEY,
                        :ENTERPRISE_SERVER_URL_SERVICE_CONFIG_KEY, :SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER,
-                       :AGENT_JARS_PATH, :AGENT_PATH, :AGENT_DIRECT_DOWNLOAD_ENV_KEY
+                       :AGENT_JARS_PATH, :AGENT_PATH, :AGENT_DIRECT_DOWNLOAD_ENV_KEY, :SEEKER_VERSION_API
 
       private
 
-      def should_download_sensor
-        a=@droplet.environment_variables.as_env_vars
-        puts "env vars: #{a}"
-        puts "env containt direct download variable : #{@droplet.environment_variables.as_env_vars.include? AGENT_DIRECT_DOWNLOAD_ENV_KEY}"
-        !@droplet.environment_variables.as_env_vars.include? AGENT_DIRECT_DOWNLOAD_ENV_KEY
+      def should_download_sensor(server_base_url)
+        uri = URI.join(credentials[server_base_url], SEEKER_VERSION_API).to_s
+        json_response = Net::HTTP.get(uri)
+        puts "Seeker server response for version WS: #{json_response}"
+        seeker_version_response=JSON.parse(json_response)
+        seeker_version = seeker_version_response['version']
+        version_prefix = seeker_version[0,7]
+        last_seeker_version_without_agent_direct_download_date = Date.parse('2018.05.01')
+        puts "Current Seeker version #{version_prefix}"
+        version_date  = Date.parse(version_prefix+ '.01')
+        version_date > last_seeker_version_without_agent_direct_download_date
       end
 
       def agent_direct_link(credentials)
@@ -111,12 +121,14 @@ module JavaBuildpack
       end
 
       def fetch_agent_direct(credentials)
+        puts 'Trying to download agent directly...'
         java_agent_zip_uri = agent_direct_link(credentials)
         puts "Before downloading Agent from: #{java_agent_zip_uri}"
         download_zip('', java_agent_zip_uri, false, @droplet.sandbox)
       end
 
       def fetch_agent_within_sensor(credentials)
+        puts 'Trying to download sensor...'
         seeker_tmp_dir = @droplet.sandbox + 'seeker_tmp_sensor'
         shell "rm -rf #{seeker_tmp_dir}"
         enterprise_server_uri = URI.parse(
