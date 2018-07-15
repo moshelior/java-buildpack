@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
+gem 'addressable', require: 'addressable/uri'
 
-gem 'addressable'
 group :development do
   gem 'rake'
   gem 'redcarpet'
