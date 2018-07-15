@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'addressable', '~> 2.5', '>= 2.5.2'
+gem 'addressable'
 group :development do
   gem 'rake'
   gem 'redcarpet'
