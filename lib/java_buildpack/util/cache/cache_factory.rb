@@ -28,19 +28,26 @@ module JavaBuildpack
       class CacheFactory
 
         class << self
-
+          @allowed_url_for_insecure_https = 'none'
           # Creates a new instance of an {ApplicationCache} if it can, otherwise a {DownloadCache}
           #
           # @return [ApplicationCache, DownloadCache] a new instance of an {ApplicationCache} if it can, otherwise a
           #                                           {DownloadCache}
           def create
-            if ApplicationCache.available?
-              ApplicationCache.new
-            else
-              DownloadCache.new(Pathname.new(Dir.tmpdir), JavaBuildpack::Util::Cache::CACHED_RESOURCES_DIRECTORY)
-            end
+            cache = if ApplicationCache.available?
+                      ApplicationCache.new(@allowed_url_for_insecure_https)
+                    else
+                      DownloadCache.new(Pathname.new(Dir.tmpdir), \
+                                        JavaBuildpack::Util::Cache::CACHED_RESOURCES_DIRECTORY)
+                    end
+            cache.allowed_url_for_unsafe_https = @allowed_url_for_insecure_https if cache.is_a? DownloadCache
+
+            cache
           end
 
+          def allowed_url(url)
+            @allowed_url_for_insecure_https = url
+          end
         end
 
       end
