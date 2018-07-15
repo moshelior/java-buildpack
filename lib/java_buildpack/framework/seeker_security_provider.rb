@@ -36,7 +36,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
 
       def compile
-        puts 'Seeker buildpack compile stage start'
+        puts 'Seeker buildpack compile stage start 5 '
         credentials = fetch_credentials
         puts "Credentials #{credentials}"
         assert_configuration_valid(credentials)
@@ -118,8 +118,8 @@ module JavaBuildpack
 
       def get_seeker_version_details(server_base_url)
         version_address = URI.join(server_base_url, SEEKER_VERSION_API).to_s
-        escaped_address = CGI.escape(version_address)
-        uri             = URI.parse(escaped_address)
+        # escaped_address = URI.escape(version_address)
+        uri             = URI.parse(version_address)
         Net::HTTP.get(uri)
       end
 
