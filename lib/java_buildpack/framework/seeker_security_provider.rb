@@ -23,7 +23,7 @@ require 'net/http'
 require 'json'
 require 'date'
 require 'cgi'
-require 'addressable/uri'
+require 'addressable'
 
 module JavaBuildpack
   module Framework

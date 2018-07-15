@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+gem 'addressable'
 
 group :development do
   gem 'rake'
