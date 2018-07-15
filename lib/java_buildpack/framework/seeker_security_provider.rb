@@ -95,10 +95,9 @@ module JavaBuildpack
       # seeker service name identifier
       FILTER = /seeker/
 
-
       private_constant :SENSOR_HOST_SERVICE_CONFIG_KEY, :SENSOR_PORT_SERVICE_CONFIG_KEY,
                        :ENTERPRISE_SERVER_URL_SERVICE_CONFIG_KEY, :SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER,
-                       :AGENT_JARS_PATH, :AGENT_PATH, :AGENT_DIRECT_DOWNLOAD_ENV_KEY, :SEEKER_VERSION_API
+                       :AGENT_JARS_PATH, :AGENT_PATH, :SEEKER_VERSION_API
 
       private
 
@@ -106,12 +105,12 @@ module JavaBuildpack
         uri = URI.join(credentials[server_base_url], SEEKER_VERSION_API).to_s
         json_response = Net::HTTP.get(uri)
         puts "Seeker server response for version WS: #{json_response}"
-        seeker_version_response=JSON.parse(json_response)
+        seeker_version_response = JSON.parse(json_response)
         seeker_version = seeker_version_response['version']
-        version_prefix = seeker_version[0,7]
+        version_prefix = seeker_version[0, 7]
         last_seeker_version_without_agent_direct_download_date = Date.parse('2018.05.01')
         puts "Current Seeker version #{version_prefix}"
-        version_date  = Date.parse(version_prefix+ '.01')
+        version_date = Date.parse(version_prefix + '.01')
         version_date > last_seeker_version_without_agent_direct_download_date
       end
 
