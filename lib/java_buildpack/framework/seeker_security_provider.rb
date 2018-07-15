@@ -76,7 +76,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
         credentials = fetch_credentials
-        @logger.debug { 'Seeker buildpack release stage start' }
+        # @logger.debug { 'Seeker buildpack release stage start' }
         @droplet.java_opts.add_javaagent(@droplet.sandbox + 'seeker-agent.jar')
         @droplet.environment_variables
           .add_environment_variable('SEEKER_SENSOR_HOST', credentials[SENSOR_HOST_SERVICE_CONFIG_KEY])
