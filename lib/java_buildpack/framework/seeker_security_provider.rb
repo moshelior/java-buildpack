@@ -23,7 +23,7 @@ require 'net/http'
 require 'json'
 require 'date'
 require 'cgi'
-require 'addressable'
+
 
 module JavaBuildpack
   module Framework
@@ -117,9 +117,9 @@ module JavaBuildpack
       def should_download_sensor(server_base_url)
         json_response = get_seeker_version_details(server_base_url)
         @logger.debug { "Seeker server response for version WS: #{json_response}" }
-        seeker_version_response = JSON.parse(json_response)
-        seeker_version = seeker_version_response['version']
-        version_prefix = seeker_version[0, 7]
+        seeker_version_response                                = JSON.parse(json_response)
+        seeker_version                                         = seeker_version_response['version']
+        version_prefix                                         = seeker_version[0, 7]
         last_seeker_version_without_agent_direct_download_date = Date.parse('2018.05.01')
         @logger.debug { "Current Seeker version #{version_prefix}" }
         current_seeker_version = Date.parse(version_prefix + '.01')
@@ -127,11 +127,11 @@ module JavaBuildpack
       end
 
       def get_seeker_version_details(server_base_url)
-        uri = Addressable::URI.parse(server_base_url)
-        http = Net::HTTP.new(uri.host,uri.port)
-        if uri.scheme == "https"
+        uri  = URI.parse(server_base_url)
+        http = Net::HTTP.new(uri.host, uri.port)
+        if uri.scheme == 'https'
           http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-          http.use_ssl = true
+          http.use_ssl     = true
         end
         http_response = http.request_get(SEEKER_VERSION_API)
         http_response.body
@@ -142,6 +142,7 @@ module JavaBuildpack
       end
 
       def fetch_agent_direct(credentials)
+
         @logger.debug { 'Trying to download agent directly...' }
         java_agent_zip_uri = agent_direct_link(credentials)
         download_agent(java_agent_zip_uri)

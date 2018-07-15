@@ -289,6 +289,7 @@ module JavaBuildpack
 
           if secure?(rich_uri)
             http_options[:use_ssl] = true
+            http_options[:verify_mode] = OpenSSL::SSL::VERIFY_NONE
             @logger.debug { 'Adding HTTP options for secure connection' }
 
             ca_file http_options
