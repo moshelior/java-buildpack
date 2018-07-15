@@ -36,8 +36,9 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
 
       def compile
-        puts 'Seeker buildpack compile stage start - 4'
+        puts 'Seeker buildpack compile stage start'
         credentials = fetch_credentials
+        puts "Credentials #{credentials}"
         assert_configuration_valid(credentials)
         if should_download_sensor(credentials[ENTERPRISE_SERVER_URL_SERVICE_CONFIG_KEY])
           fetch_agent_within_sensor(credentials)
