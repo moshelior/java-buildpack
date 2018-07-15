@@ -25,18 +25,28 @@ require 'cgi'
 
 module JavaBuildpack
   module Framework
+
     # Encapsulates the functionality for enabling zero-touch Seeker support.
     class SeekerSecurityProvider < JavaBuildpack::Component::BaseComponent
+      # Creates an instance
+      #
+      # @param [Hash] context a collection of utilities used the component
+      def initialize(context)
+        super(context)
+        @logger = JavaBuildpack::Logging::LoggerFactory.instance.get_logger SeekerSecurityProvider
+      end
+
       # (see JavaBuildpack::Component::BaseComponent#detect)
       def detect
         @application.services.one_service? FILTER
       end
 
       # (see JavaBuildpack::Component::BaseComponent#compile)
+
       def compile
-        puts 'Seeker buildpack compile stage start 6 '
+        @logger.debug { 'Seeker buildpack compile stage start 10' }
         credentials = fetch_credentials
-        puts "Credentials #{credentials}"
+        @logger.debug { "Credentials #{credentials}" }
         assert_configuration_valid(credentials)
         if should_download_sensor(credentials[ENTERPRISE_SERVER_URL_SERVICE_CONFIG_KEY])
           fetch_agent_within_sensor(credentials)
@@ -64,6 +74,7 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
+        @logger.debug { 'Seeker buildpack release stage start' }
         credentials = fetch_credentials
         @droplet.java_opts.add_javaagent(@droplet.sandbox + 'seeker-agent.jar')
         @droplet.environment_variables
@@ -103,19 +114,18 @@ module JavaBuildpack
 
       def should_download_sensor(server_base_url)
         json_response = get_seeker_version_details(server_base_url)
-        puts "Seeker server response for version WS: #{json_response}"
+        @logger.debug { "Seeker server response for version WS: #{json_response}" }
         seeker_version_response = JSON.parse(json_response)
         seeker_version = seeker_version_response['version']
         version_prefix = seeker_version[0, 7]
         last_seeker_version_without_agent_direct_download_date = Date.parse('2018.05.01')
-        puts "Current Seeker version #{version_prefix}"
+        @logger.debug { "Current Seeker version #{version_prefix}" }
         current_seeker_version = Date.parse(version_prefix + '.01')
         current_seeker_version <= last_seeker_version_without_agent_direct_download_date
       end
 
       def get_seeker_version_details(server_base_url)
         version_address = URI.join(server_base_url, SEEKER_VERSION_API).to_s
-        # escaped_address = URI.escape(version_address)
         uri             = URI.parse(version_address)
         Net::HTTP.get(uri)
       end
@@ -125,22 +135,22 @@ module JavaBuildpack
       end
 
       def fetch_agent_direct(credentials)
-        puts 'Trying to download agent directly...'
+        @logger.debug { 'Trying to download agent directly...' }
         java_agent_zip_uri = agent_direct_link(credentials)
         download_agent(java_agent_zip_uri)
       end
 
       def download_agent(java_agent_zip_uri)
-        puts "Before downloading Agent from: #{java_agent_zip_uri}"
+        @logger.debug { "Before downloading Agent from: #{java_agent_zip_uri}" }
         download_zip('', java_agent_zip_uri, false, @droplet.sandbox)
       end
 
       def fetch_agent_within_sensor(credentials)
-        puts 'Trying to download sensor...'
+        @logger.debug { 'Trying to download sensor...' }
         seeker_tmp_dir = @droplet.sandbox + 'seeker_tmp_sensor'
         shell "rm -rf #{seeker_tmp_dir}"
         sensor_direct_link = sensor_direct_link(credentials)
-        puts "Before downloading Sensor from: #{sensor_direct_link}"
+        @logger.debug { "Before downloading Sensor from: #{sensor_direct_link}" }
         download_zip('', sensor_direct_link,
                      false, seeker_tmp_dir, 'SensorInstaller.zip')
         inner_jar_file = seeker_tmp_dir + 'SeekerInstaller.jar'
