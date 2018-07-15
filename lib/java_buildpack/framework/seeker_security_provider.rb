@@ -21,6 +21,7 @@ require 'fileutils'
 require 'net/http'
 require 'json'
 require 'date'
+require 'cgi'
 
 module JavaBuildpack
   module Framework
@@ -35,7 +36,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
 
       def compile
-        puts 'version 4'
+        puts 'Seeker buildpack compile stage start - 4'
         credentials = fetch_credentials
         assert_configuration_valid(credentials)
         if should_download_sensor(credentials[ENTERPRISE_SERVER_URL_SERVICE_CONFIG_KEY])
@@ -64,11 +65,12 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
+        puts 'Seeker buildpack release stage start'
         credentials = fetch_credentials
         @droplet.java_opts.add_javaagent(@droplet.sandbox + 'seeker-agent.jar')
         @droplet.environment_variables
-                .add_environment_variable('SEEKER_SENSOR_HOST', credentials[SENSOR_HOST_SERVICE_CONFIG_KEY])
-                .add_environment_variable('SEEKER_SENSOR_HTTP_PORT', credentials[SENSOR_PORT_SERVICE_CONFIG_KEY])
+          .add_environment_variable('SEEKER_SENSOR_HOST', credentials[SENSOR_HOST_SERVICE_CONFIG_KEY])
+          .add_environment_variable('SEEKER_SENSOR_HTTP_PORT', credentials[SENSOR_PORT_SERVICE_CONFIG_KEY])
       end
 
       # JSON key for the host of the seeker sensor
@@ -102,18 +104,22 @@ module JavaBuildpack
       private
 
       def should_download_sensor(server_base_url)
-        version_address = URI.join(server_base_url, SEEKER_VERSION_API).to_s
-        escaped_address = URI.escape(version_address)
-        uri = URI.parse(escaped_address)
-        json_response = Net::HTTP.get(uri)
+        json_response = get_seeker_version_details(server_base_url)
         puts "Seeker server response for version WS: #{json_response}"
         seeker_version_response = JSON.parse(json_response)
         seeker_version = seeker_version_response['version']
         version_prefix = seeker_version[0, 7]
         last_seeker_version_without_agent_direct_download_date = Date.parse('2018.05.01')
         puts "Current Seeker version #{version_prefix}"
-        version_date = Date.parse(version_prefix + '.01')
-        version_date > last_seeker_version_without_agent_direct_download_date
+        current_seeker_version = Date.parse(version_prefix + '.01')
+        current_seeker_version <= last_seeker_version_without_agent_direct_download_date
+      end
+
+      def get_seeker_version_details(server_base_url)
+        version_address = URI.join(server_base_url, SEEKER_VERSION_API).to_s
+        escaped_address = CGI.escape(version_address)
+        uri             = URI.parse(escaped_address)
+        Net::HTTP.get(uri)
       end
 
       def agent_direct_link(credentials)
@@ -123,6 +129,10 @@ module JavaBuildpack
       def fetch_agent_direct(credentials)
         puts 'Trying to download agent directly...'
         java_agent_zip_uri = agent_direct_link(credentials)
+        download_agent(java_agent_zip_uri)
+      end
+
+      def download_agent(java_agent_zip_uri)
         puts "Before downloading Agent from: #{java_agent_zip_uri}"
         download_zip('', java_agent_zip_uri, false, @droplet.sandbox)
       end
@@ -131,17 +141,19 @@ module JavaBuildpack
         puts 'Trying to download sensor...'
         seeker_tmp_dir = @droplet.sandbox + 'seeker_tmp_sensor'
         shell "rm -rf #{seeker_tmp_dir}"
-        enterprise_server_uri = URI.parse(
-          URI.encode(credentials[ENTERPRISE_SERVER_URL_SERVICE_CONFIG_KEY].strip)
-        )
-        puts "Before downloading Sensor from: #{enterprise_server_uri}"
-        download_zip('', URI.join(enterprise_server_uri,
-                                  SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s,
+        sensor_direct_link = sensor_direct_link(credentials)
+        puts "Before downloading Sensor from: #{sensor_direct_link}"
+        download_zip('', sensor_direct_link,
                      false, seeker_tmp_dir, 'SensorInstaller.zip')
         inner_jar_file = seeker_tmp_dir + 'SeekerInstaller.jar'
         # Unzip only the java agent - to save time
         shell "unzip -j #{inner_jar_file} #{AGENT_JARS_PATH} -d #{@droplet.sandbox} 2>&1"
         shell "rm -rf #{seeker_tmp_dir}"
+      end
+
+      def sensor_direct_link(credentials)
+        enterprise_server_uri = URI.parse(credentials[ENTERPRISE_SERVER_URL_SERVICE_CONFIG_KEY].strip)
+        URI.join(enterprise_server_uri, SENSOR_ZIP_RELATIVE_PATH_AT_ENTERPRISE_SERVER).to_s
       end
     end
   end
