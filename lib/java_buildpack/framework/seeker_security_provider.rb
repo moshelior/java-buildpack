@@ -35,7 +35,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
 
       def compile
-        puts 'version 3'
+        puts 'version 4'
         credentials = fetch_credentials
         assert_configuration_valid(credentials)
         if should_download_sensor(credentials[ENTERPRISE_SERVER_URL_SERVICE_CONFIG_KEY])
@@ -102,7 +102,9 @@ module JavaBuildpack
       private
 
       def should_download_sensor(server_base_url)
-        uri = URI.join(server_base_url, SEEKER_VERSION_API).to_s
+        version_address = URI.join(server_base_url, SEEKER_VERSION_API).to_s
+        escaped_address = URI.escape(version_address)
+        uri = URI.parse(escaped_address)
         json_response = Net::HTTP.get(uri)
         puts "Seeker server response for version WS: #{json_response}"
         seeker_version_response = JSON.parse(json_response)
