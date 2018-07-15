@@ -46,7 +46,7 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
 
       def compile
-        @logger.debug { 'Seeker buildpack compile stage start base' }
+        @logger.debug { 'Seeker buildpack compile stage start' }
         credentials = fetch_credentials
         @logger.debug { "Credentials #{credentials}" }
         assert_configuration_valid(credentials)
@@ -150,6 +150,7 @@ module JavaBuildpack
 
       def download_agent(java_agent_zip_uri)
         @logger.debug { "Before downloading Agent from: #{java_agent_zip_uri}" }
+        JavaBuildpack::Util::Cache::DownloadCache.allowed_url_for_unsafe_https(java_agent_zip_uri)
         download_zip('', java_agent_zip_uri, false, @droplet.sandbox)
       end
 
@@ -159,6 +160,7 @@ module JavaBuildpack
         shell "rm -rf #{seeker_tmp_dir}"
         sensor_direct_link = sensor_direct_link(credentials)
         @logger.debug { "Before downloading Sensor from: #{sensor_direct_link}" }
+        JavaBuildpack::Util::Cache::DownloadCache.allowed_url_for_unsafe_https(sensor_direct_link)
         download_zip('', sensor_direct_link,
                      false, seeker_tmp_dir, 'SensorInstaller.zip')
         inner_jar_file = seeker_tmp_dir + 'SeekerInstaller.jar'

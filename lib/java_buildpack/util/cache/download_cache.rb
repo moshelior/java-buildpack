@@ -41,7 +41,7 @@ module JavaBuildpack
       # * {https://en.wikipedia.org/wiki/HTTP_ETag ETag Wikipedia Definition}
       # * {http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html HTTP/1.1 Header Field Definitions}
       class DownloadCache
-
+        @@allowed_url_for_unsafe_https = 'none'
         attr_writer :retry_max
 
         # Creates an instance of the cache that is backed by a number of filesystem locations.  The first argument
@@ -56,6 +56,10 @@ module JavaBuildpack
           @mutable_cache_root    = mutable_cache_root
           @immutable_cache_roots = immutable_cache_roots.unshift mutable_cache_root
           @retry_max             = RETRY_MAX
+        end
+
+        def DownloadCache.allowed_url_for_unsafe_https (url)
+          @@allowed_url_for_unsafe_https = url
         end
 
         # Retrieves an item from the cache. Yields an open file containing the item's content or raises an exception if
@@ -289,7 +293,7 @@ module JavaBuildpack
 
           if secure?(rich_uri)
             http_options[:use_ssl] = true
-            http_options[:verify_mode] = OpenSSL::SSL::VERIFY_NONE
+            http_options[:verify_mode] = OpenSSL::SSL::VERIFY_NONE if rich_uri.to_s == @@allowed_url_for_unsafe_https
             @logger.debug { 'Adding HTTP options for secure connection' }
 
             ca_file http_options
