@@ -55,6 +55,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  addressable
   rake
   redcarpet
   rspec
@@ -67,4 +68,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.16.1
+   1.16.2
