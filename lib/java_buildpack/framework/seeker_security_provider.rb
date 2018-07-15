@@ -25,7 +25,6 @@ require 'cgi'
 
 module JavaBuildpack
   module Framework
-
     # Encapsulates the functionality for enabling zero-touch Seeker support.
     class SeekerSecurityProvider < JavaBuildpack::Component::BaseComponent
       # (see JavaBuildpack::Component::BaseComponent#detect)
@@ -34,9 +33,8 @@ module JavaBuildpack
       end
 
       # (see JavaBuildpack::Component::BaseComponent#compile)
-
       def compile
-        puts 'Seeker buildpack compile stage start 5 '
+        puts 'Seeker buildpack compile stage start 6 '
         credentials = fetch_credentials
         puts "Credentials #{credentials}"
         assert_configuration_valid(credentials)
@@ -66,7 +64,6 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
-        puts 'Seeker buildpack release stage start'
         credentials = fetch_credentials
         @droplet.java_opts.add_javaagent(@droplet.sandbox + 'seeker-agent.jar')
         @droplet.environment_variables
