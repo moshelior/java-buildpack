@@ -55,6 +55,7 @@ module JavaBuildpack
           @mutable_cache_root    = mutable_cache_root
           @immutable_cache_roots = immutable_cache_roots.unshift mutable_cache_root
           @retry_max             = RETRY_MAX
+          @allowed_url_for_unsafe_https = nil
         end
 
         # Retrieves an item from the cache. Yields an open file containing the item's content or raises an exception if
@@ -290,7 +291,7 @@ module JavaBuildpack
             http_options[:use_ssl] = true
             if rich_uri.to_s == @allowed_url_for_unsafe_https
               http_options[:verify_mode] = OpenSSL::SSL::VERIFY_NONE
-              @logger.debug { 'Allowing a download from server with a self signed certificate ' }
+              @logger.warn { "Allowing a download from server with a self signed certificate, URL:  #{@allowed_url_for_unsafe_https}" }
             end
             @logger.debug { 'Adding HTTP options for secure connection' }
 
