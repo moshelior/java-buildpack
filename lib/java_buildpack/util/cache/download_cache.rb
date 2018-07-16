@@ -41,8 +41,7 @@ module JavaBuildpack
       # * {https://en.wikipedia.org/wiki/HTTP_ETag ETag Wikipedia Definition}
       # * {http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html HTTP/1.1 Header Field Definitions}
       class DownloadCache
-        attr_writer :retry_max,
-                    @allowed_url_for_unsafe_https = 'none', :allowed_url_for_unsafe_https
+        attr_writer :retry_max, :allowed_url_for_unsafe_https
 
         # Creates an instance of the cache that is backed by a number of filesystem locations.  The first argument
         # (+mutable_cache_root+) is the only location that downloaded files will be stored in.

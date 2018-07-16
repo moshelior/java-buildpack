@@ -35,7 +35,7 @@ module JavaBuildpack
           #                                           {DownloadCache}
           def create
             cache = if ApplicationCache.available?
-                      ApplicationCache.new(@allowed_url_for_insecure_https)
+                      ApplicationCache.new
                     else
                       DownloadCache.new(Pathname.new(Dir.tmpdir), \
                                         JavaBuildpack::Util::Cache::CACHED_RESOURCES_DIRECTORY)
@@ -45,6 +45,10 @@ module JavaBuildpack
             cache
           end
 
+          # Allow download of file for server with self signed cert
+          #
+          #
+          # @return [string] url
           def allowed_url(url)
             @allowed_url_for_insecure_https = url
           end
