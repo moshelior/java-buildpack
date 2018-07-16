@@ -45,9 +45,9 @@ module JavaBuildpack
       # (see JavaBuildpack::Component::BaseComponent#compile)
 
       def compile
-        @logger.debug { 'Seeker buildpack compile stage start' }
+        @logger.info { 'Seeker buildpack compile stage start' }
         credentials = fetch_credentials
-        @logger.debug { "Credentials #{credentials}" }
+        @logger.info { "Credentials #{credentials}" }
         assert_configuration_valid(credentials)
         if should_download_sensor(credentials[ENTERPRISE_SERVER_URL_SERVICE_CONFIG_KEY])
           fetch_agent_within_sensor(credentials)
@@ -75,7 +75,7 @@ module JavaBuildpack
 
       # (see JavaBuildpack::Component::BaseComponent#release)
       def release
-        @logger.debug { 'Seeker buildpack release stage start' }
+        @logger.info { 'Seeker buildpack release stage start' }
         credentials = fetch_credentials
         @droplet.java_opts.add_javaagent(@droplet.sandbox + 'seeker-agent.jar')
         @droplet.environment_variables
@@ -120,7 +120,7 @@ module JavaBuildpack
         seeker_version                                         = seeker_version_response['version']
         version_prefix                                         = seeker_version[0, 7]
         last_seeker_version_without_agent_direct_download_date = Date.parse('2018.05.01')
-        @logger.debug { "Current Seeker version #{version_prefix}" }
+        @logger.info { "Current Seeker version #{version_prefix}" }
         current_seeker_version = Date.parse(version_prefix + '.01')
         current_seeker_version <= last_seeker_version_without_agent_direct_download_date
       end
@@ -141,7 +141,7 @@ module JavaBuildpack
       end
 
       def fetch_agent_direct(credentials)
-        @logger.debug { 'Trying to download agent directly...' }
+        @logger.info { 'Trying to download agent directly...' }
         java_agent_zip_uri = agent_direct_link(credentials)
         download_agent(java_agent_zip_uri)
       end
@@ -153,7 +153,7 @@ module JavaBuildpack
       end
 
       def fetch_agent_within_sensor(credentials)
-        @logger.debug { 'Trying to download sensor...' }
+        @logger.info { 'Trying to download sensor...' }
         seeker_tmp_dir = @droplet.sandbox + 'seeker_tmp_sensor'
         shell "rm -rf #{seeker_tmp_dir}"
         sensor_direct_link = sensor_direct_link(credentials)
